@@ -1,80 +1,78 @@
 
 
-void TurnRobot(float deg, int power, float dia, float trc, float fix){
+void TurnRobot(float deg, int power, float dia, float trc, tMotor leftMotor, tMotor rightMotor){
 	float wc = PI*dia;
 	float rc = PI*trc;
 	float turnleft = sgn(deg);
-	deg = abs(deg*fix);
+	deg = abs(deg);
 	float wheeldist = abs((rc*deg)/360.0);
-	nMotorEncoder[port2] = 0;
-	nMotorEncoder[port3] = 0;
-	nMotorEncoder[port2] = 0;
-	nMotorEncoder[port3] = 0;
+	nMotorEncoder[leftMotor] = 0;
+	nMotorEncoder[rightMotor] = 0;
 
 	bool left = false;
 	bool right = false;
 
 	while(left == false && right == false){
-		float distL = abs(nMotorEncoder[port2]/627.2)*wc;
-		float distR = abs(nMotorEncoder[port3]/627.2)*wc;
+		float distL = abs(nMotorEncoder[leftMotor]/627.2)*wc;
+		float distR = abs(nMotorEncoder[rightMotor]/627.2)*wc;
 
 		if(distL >= wheeldist){
 			left = true;
-			motor[port2] = 0;
+			motor[leftMotor] = 0;
 		} else {
-			motor[port2] = abs(power)*turnleft;
+			motor[leftMotor] = abs(power)*turnleft;
 		}
 
 		if(distR >= wheeldist){
 			 right = true;
-			 motor[port3] = 0;
+			 motor[rightMotor] = 0;
 		} else {
-			motor[port3] = -abs(power)*turnleft;
+			motor[rightMotor] = -abs(power)*turnleft;
 		}
 
 	}
 
-	motor[port3] = 20*turnleft;
-	motor[port2] = -20*turnleft;
+	motor[rightMotor] = 20*turnleft;
+	motor[leftMotor] = -20*turnleft;
 	wait1Msec(100);
-	motor[port3] = 0;
-	motor[port2] = 0;
+	motor[rightMotor] = 0;
+	motor[leftMotor] = 0;
 }
 
 void MoveDist(float cm, int power, int dia){
 	float wc = PI*dia;
 	int back = sgn(cm);
-	cm = abs(cm);
-	nMotorEncoder[port2] = 0;
-	nMotorEncoder[port3] = 0;
+	cm = abs(cm)*0.9; //obligatory code to make Jacqueline stop whining, remove when it's all over
+	nMotorEncoder[leftMotor] = 0;
+	nMotorEncoder[rightMotor] = 0;
 
 	bool left = false;
 	bool right = false;
 
 	while(left == false && right == false){
-		float distL = abs(nMotorEncoder[port2]/627.2)*wc;
-		float distR = abs(nMotorEncoder[port3]/627.2)*wc;
+		float distL = abs(nMotorEncoder[leftMotor]/627.2)*wc;
+		float distR = abs(nMotorEncoder[rightMotor]/627.2)*wc;
 
 		if(distL >= cm){
 			left = true;
-			motor[port2] = 0;
+			motor[leftMotor] = 0;
 		} else {
-			motor[port2] = abs(power)*back;
+			motor[leftMotor] = abs(power)*back;
 		}
 
 		if(distR >= cm){
 			right = true;
-			motor[port3] = 0;
+			motor[rightMotor] = 0;
 		} else {
-			motor[port3] = abs(power)*back;
+			motor[rightMotor] = abs(power)*back;
 		}
 	}
 
-	motor[port2] = -10*back;
-	motor[port3] = -10*back;
+	motor[leftMotor] = -10*back;
+	motor[rightMotor] = -10*back;
 	wait1Msec(100);
-	motor[port2] = 0;
-	motor[port3] = 0;
+	motor[leftMotor] = 0;
+	motor[rightMotor] = 0;
 }
 
 
